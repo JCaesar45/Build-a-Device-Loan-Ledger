@@ -166,7 +166,7 @@
       }
 
       .grid-section {
-        padding: 10rem 2rem;
+        padding: 8rem 2rem;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
         gap: 2rem;
@@ -221,6 +221,129 @@
         color: rgba(248, 248, 248, 0.6);
         font-size: 0.95rem;
       }
+
+      /* Allocation Engine Styles */
+      .allocation-engine {
+        padding: 8rem 2rem;
+        background: linear-gradient(180deg, var(--obsidian) 0%, #0d0d0d 100%);
+        border-top: 1px solid var(--glass-border);
+      }
+
+      .allocation-engine .container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .allocation-engine h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .sub-lead {
+        color: rgba(248, 248, 248, 0.6);
+        margin-bottom: 4rem;
+      }
+
+      .slider-container {
+        margin-bottom: 4rem;
+      }
+
+      .slider-container label {
+        display: block;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--aurum);
+        margin-bottom: 1rem;
+      }
+
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        outline: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 24px;
+        height: 24px;
+        background: var(--aurum);
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        transition: transform 0.2s;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
+      }
+
+      .slider-value {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-top: 1.5rem;
+        color: var(--platinum);
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .metric {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        padding: 2rem;
+      }
+
+      .metric-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: rgba(248, 248, 248, 0.5);
+        margin-bottom: 0.5rem;
+      }
+
+      .metric-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--aurum);
+      }
+
+      .yield-bar-container {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: 4rem;
+      }
+
+      .yield-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--aurum-dim), var(--aurum));
+        width: 5%;
+        transition: width 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: 0 0 10px var(--aurum);
+      }
+
+      .execute-btn {
+        width: 100%;
+        max-width: 400px;
+      }
+
+      .execute-btn.success {
+        background: #2e8b57;
+        pointer-events: none;
+        box-shadow: 0 0 30px rgba(46, 139, 87, 0.4);
+      }
     </style>
   </head>
   <body>
@@ -268,8 +391,50 @@
       </div>
     </section>
 
+    <section class="allocation-engine">
+      <div class="container reveal">
+        <h2>Capital Allocation Engine</h2>
+        <p class="sub-lead">
+          Configure your fractional entry point into the Aurelia SPV pool.
+        </p>
+
+        <div class="slider-container">
+          <label for="capital-slider">Principal Allocation</label>
+          <input
+            type="range"
+            id="capital-slider"
+            min="10000"
+            max="1000000"
+            step="5000"
+            value="50000"
+          />
+          <div class="slider-value" id="capital-value">$50,000</div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="metric-label">Fractional Shares (FRAX)</span>
+            <span class="metric-value" id="fractional-shares">5.0000</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Projected Annual Yield (8.5% APY)</span>
+            <span class="metric-value" id="projected-yield">$4,250.00</span>
+          </div>
+        </div>
+
+        <div class="yield-bar-container">
+          <div class="yield-bar" id="yield-bar"></div>
+        </div>
+
+        <button class="btn btn-primary execute-btn">
+          Execute Smart Contract
+        </button>
+      </div>
+    </section>
+
     <script>
       document.addEventListener("DOMContentLoaded", () => {
+        // Intersection Observer for Viewport Animations
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -285,6 +450,7 @@
           .querySelectorAll(".reveal")
           .forEach((el) => observer.observe(el));
 
+        // Parallax Effect Logic
         document.addEventListener("mousemove", (e) => {
           const x = (e.clientX / window.innerWidth - 0.5) * 30;
           const y = (e.clientY / window.innerHeight - 0.5) * 30;
@@ -292,14 +458,80 @@
           document.documentElement.style.setProperty("--parallax-y", `${y}px`);
         });
 
-        document.querySelectorAll(".btn-primary").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            btn.style.transform = "scale(0.95)";
+        // Reactive State Management for Allocation Engine
+        class AllocationEngine {
+          constructor() {
+            this.state = {
+              principal: 50000,
+              apy: 8.5,
+              term: 12,
+              navPerShare: 10000
+            };
+            this.elements = {
+              slider: document.getElementById("capital-slider"),
+              output: document.getElementById("capital-value"),
+              shares: document.getElementById("fractional-shares"),
+              yield: document.getElementById("projected-yield"),
+              bar: document.getElementById("yield-bar"),
+              executeBtn: document.querySelector(".execute-btn")
+            };
+            this.init();
+          }
+
+          init() {
+            this.elements.slider.addEventListener("input", (e) =>
+              this.update(e.target.value)
+            );
+            this.elements.executeBtn.addEventListener("click", () =>
+              this.executeContract()
+            );
+            this.update(this.state.principal);
+          }
+
+          calculateShares(principal) {
+            return (principal / this.state.navPerShare).toFixed(4);
+          }
+
+          calculateYield(principal, apy, term) {
+            const r = apy / 100;
+            const t = term / 12;
+            return principal * r * t;
+          }
+
+          update(value) {
+            this.state.principal = parseFloat(value);
+            this.elements.output.textContent = `$${this.state.principal.toLocaleString()}`;
+
+            const shares = this.calculateShares(this.state.principal);
+            this.elements.shares.textContent = shares;
+
+            const yieldVal = this.calculateYield(
+              this.state.principal,
+              this.state.apy,
+              this.state.term
+            );
+            this.elements.yield.textContent = `$${yieldVal.toLocaleString(undefined, { maximumFractionDigits: 2 })}`;
+
+            const percentage = Math.min(
+              (this.state.principal / 1000000) * 100,
+              100
+            );
+            this.elements.bar.style.width = `${percentage}%`;
+          }
+
+          executeContract() {
+            const btn = this.elements.executeBtn;
+            btn.textContent = "Broadcasting to Mempool...";
+            btn.style.pointerEvents = "none";
+
             setTimeout(() => {
-              btn.style.transform = "scale(1)";
-            }, 150);
-          });
-        });
+              btn.textContent = "Contract Executed | TX: 0x8F9A...";
+              btn.classList.add("success");
+            }, 1500);
+          }
+        }
+
+        new AllocationEngine();
       });
     </script>
   </body>
