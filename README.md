@@ -1,3 +1,15 @@
+# Aurelia Vault | Institutional-Grade Asset Tokenization Protocol
+
+<div align="center">
+
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?cacheSeconds=2592000)
+![License](https://img.shields.io/badge/license-Proprietary-red.svg)
+![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
+
+</div>
+
+## Executive Summary
+
 Aurelia Vault is a polyglot microservices architecture designed for the immutable fractionalization and algorithmic trading of tangible assets (fine art, hypercars, commercial real estate). The protocol bridges the gap between physical Special Purpose Vehicle (SPV) custody and decentralized ledger state transitions, providing institutional investors with sub-millisecond finality and zero-knowledge privacy guarantees (Buterin, 2014).
 
 ## Architectural Topology
