@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurelia Vault | Institutional-Grade Asset Tokenization</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;700&display=swap");
+
+      :root {
+        --obsidian: #070707;
+        --aurum: #d4af37;
+        --aurum-dim: #8a7322;
+        --platinum: #f8f8f8;
+        --glass: rgba(255, 255, 255, 0.02);
+        --glass-border: rgba(212, 175, 55, 0.15);
+        --glow: 0 0 30px rgba(212, 175, 55, 0.2);
+        --parallax-x: 0px;
+        --parallax-y: 0px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--obsidian);
+        color: var(--platinum);
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Playfair Display", serif;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .hero {
+        height: 100vh;
+        display: grid;
+        place-items: center;
+        position: relative;
+        perspective: 1000px;
+      }
+
+      .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          circle at calc(50% + var(--parallax-x)) calc(50% + var(--parallax-y)),
+          rgba(212, 175, 55, 0.08),
+          transparent 60%
+        );
+        z-index: 0;
+        transition: background 0.1s ease-out;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        max-width: 800px;
+        padding: 2rem;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition:
+          opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .eyebrow {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3em;
+        color: var(--aurum);
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--glass-border);
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        backdrop-filter: blur(10px);
+        background: var(--glass);
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 .accent {
+        background: linear-gradient(
+          135deg,
+          var(--aurum) 0%,
+          #fff2cd 50%,
+          var(--aurum) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      p.lead {
+        font-size: 1.125rem;
+        color: rgba(248, 248, 248, 0.7);
+        margin-bottom: 3rem;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-group {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 1rem 2.5rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--aurum), var(--aurum-dim));
+        color: var(--obsidian);
+        box-shadow: var(--glow);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--platinum);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--aurum);
+        color: var(--aurum);
+      }
+
+      .grid-section {
+        padding: 10rem 2rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .card {
+        background: var(--glass);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(15px);
+        padding: 3rem;
+        position: relative;
+        transition:
+          transform 0.6s ease,
+          border-color 0.6s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        border-color: var(--aurum);
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--aurum),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--aurum);
+      }
+
+      .card p {
+        color: rgba(248, 248, 248, 0.6);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="content">
+        <div class="eyebrow reveal">Institutional-Grade Tokenization</div>
+        <h1 class="reveal">
+          Fractional Ownership of
+          <span class="accent">Tangible Alpha</span>
+        </h1>
+        <p class="lead reveal">
+          Aurelia Vault provides immutable, legally binding fractionalization of
+          hypercars, fine art, and commercial real estate via a zero-knowledge
+          ledger architecture.
+        </p>
+        <div class="cta-group reveal">
+          <button class="btn btn-primary">Allocate Capital</button>
+          <button class="btn btn-secondary">Read Whitepaper</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid-section">
+      <div class="card reveal">
+        <h3>Zero-Knowledge Proofs</h3>
+        <p>
+          Execute high-volume fractional transfers without exposing underlying
+          asset valuation or counterparty identity to the public mempool.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>SPV Custody</h3>
+        <p>
+          Physical assets are held in bankruptcy-remote Special Purpose
+          Vehicles, legally mirroring the on-chain tokenomic structure.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3>Sub-Millisecond Finality</h3>
+        <p>
+          Our proprietary Java-based consensus engine processes ledger state
+          transitions in under 400 microseconds.
+        </p>
+      </div>
+    </section>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+              }
+            });
+          },
+          { threshold: 0.15 }
+        );
+
+        document
+          .querySelectorAll(".reveal")
+          .forEach((el) => observer.observe(el));
+
+        document.addEventListener("mousemove", (e) => {
+          const x = (e.clientX / window.innerWidth - 0.5) * 30;
+          const y = (e.clientY / window.innerHeight - 0.5) * 30;
+          document.documentElement.style.setProperty("--parallax-x", `${x}px`);
+          document.documentElement.style.setProperty("--parallax-y", `${y}px`);
+        });
+
+        document.querySelectorAll(".btn-primary").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            btn.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              btn.style.transform = "scale(1)";
+            }, 150);
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
